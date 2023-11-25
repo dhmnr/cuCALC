@@ -28,18 +28,18 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-<h2 align="center">empyrean</h2>
+<h2 align="center">cuCALC</h2>
 <p></p>
 
   <p align="center">
     N-Body Simulator with CUDA compute and OpenGL visualization support
     <br />
-    <!-- <a href="https://github.com/dhmnr/empyrean"><strong>Explore the docs »</strong></a> -->
+    <!-- <a href="https://github.com/dhmnr/cuCALC"><strong>Explore the docs »</strong></a> -->
     <br />
     <br />
-    <a href="https://github.com/dhmnr/empyrean/issues">Report Bug</a>
+    <a href="https://github.com/dhmnr/cuCALC/issues">Report Bug</a>
     ·
-    <a href="https://github.com/dhmnr/empyrean/issues">Request Feature</a>
+    <a href="https://github.com/dhmnr/cuCALC/issues">Request Feature</a>
   </p>
 </div>
 
@@ -69,17 +69,14 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The Gravitational N-Body Simulator is a computational physics project designed to simulate the complex interactions between multiple celestial bodies under the influence of gravity. This project aims to provide a versatile tool for scientists, researchers, and astronomy enthusiasts to better understand the dynamics of celestial systems, from simple two-body interactions to intricate multi-body systems like galaxies and star clusters.<p align="right">(<a href="#top">back to top</a>)</p>
+Lorem ipsum.<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
 ### Features
 
-* Simulation is decoupled from visualization, allowing for extremely small integration steps. Which provids realistic N-Body simulation
-* Exploiting the embarrasingly parallel nature of the N-body problem, Most of the work is offloaded to GPU by using CUDA kernels for mathematical calculations 
-* CUDA kernels directly write to OpenGL vertex buffer objects in GPU memory, avoding extremely costly Host to Device and Device to Host data copies
-* Provide a simple YAML initializer support for configuring initial state
-
+* Lorem Ipsum
+* 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
@@ -89,29 +86,9 @@ The Gravitational N-Body Simulator is a computational physics project designed t
 <!-- ROADMAP -->
 ## Roadmap
 
-### Simulation Core
-The core of empyrean, handles the physics calculations and simulation loop.
- - [ ]  Add support for more integretors (Verlet, Runge-Kutta IV, etc)
- - [ ]  Optimize reduction in CUDA kernels ([Ref](https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf))
- - [ ]  Add [Barns-Hut](http://arborjs.org/docs/barnes-hut) approximation algorithm 
- - [ ]  Implement SI prefixes and scale units automatically
 
 
-### Rendering and Visualization
-The rendering component handles the visualization of the particles and the simulation.
- - [ ] Render anti-aliased circular points
- - [ ] Add more camera controls
- - [ ] Support pause/resume and controlling simulation speed 
- - [ ] Support Vulkan
- - [ ] Display FPS and other details on window
- - [ ] Provide a user interface widget before rendering to control simulation parameters
- - [ ] Motion blur for fast moving points
-
-
-### Common
- - [ ] Add documentation
-
-<!-- See the [open issues](https://github.com/dhmnr/empyrean/issues) for a full list of proposed features (and known issues). -->
+<!-- See the [open issues](https://github.com/dhmnr/cuCALC/issues) for a full list of proposed features (and known issues). -->
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -148,11 +125,11 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Dheemanth Manur - dheemanthmanur72@gmail.com
+<!-- Dheemanth Manur - dheemanthmanur72@gmail.com -->
 
 <!-- [@twitter_handle](https://twitter.com/twitter_handle) -->
 
-Project Link: [https://github.com/dhmnr/empyrean](https://github.com/dhmnr/empyrean)
+Project Link: [https://github.com/dhmnr/cuCALC](https://github.com/dhmnr/cuCALC)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -161,7 +138,7 @@ Project Link: [https://github.com/dhmnr/empyrean](https://github.com/dhmnr/empyr
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Choose an Open Source License](https://choosealicense.com)
+<!-- * [Choose an Open Source License](https://choosealicense.com) -->
 * [Img Shields](https://shields.io)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -170,13 +147,13 @@ Project Link: [https://github.com/dhmnr/empyrean](https://github.com/dhmnr/empyr
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/dhmnr/empyrean.svg?style=for-the-badge
-[contributors-url]: https://github.com/dhmnr/empyrean/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/dhmnr/empyrean.svg?style=for-the-badge
-[forks-url]: https://github.com/dhmnr/empyrean/network/members
-[stars-shield]: https://img.shields.io/github/stars/dhmnr/empyrean.svg?style=for-the-badge
-[stars-url]: https://github.com/dhmnr/empyrean/stargazers
-[issues-shield]: https://img.shields.io/github/issues/dhmnr/empyrean.svg?style=for-the-badge
-[issues-url]: https://github.com/dhmnr/empyrean/issues
-[license-shield]: https://img.shields.io/github/license/dhmnr/empyrean.svg?style=for-the-badge
-[license-url]: https://github.com/dhmnr/empyrean/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/dhmnr/cuCALC.svg?style=for-the-badge
+[contributors-url]: https://github.com/dhmnr/cuCALC/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/dhmnr/cuCALC.svg?style=for-the-badge
+[forks-url]: https://github.com/dhmnr/cuCALC/network/members
+[stars-shield]: https://img.shields.io/github/stars/dhmnr/cuCALC.svg?style=for-the-badge
+[stars-url]: https://github.com/dhmnr/cuCALC/stargazers
+[issues-shield]: https://img.shields.io/github/issues/dhmnr/cuCALC.svg?style=for-the-badge
+[issues-url]: https://github.com/dhmnr/cuCALC/issues
+[license-shield]: https://img.shields.io/github/license/dhmnr/cuCALC.svg?style=for-the-badge
+[license-url]: https://github.com/dhmnr/cuCALC/blob/master/LICENSE
