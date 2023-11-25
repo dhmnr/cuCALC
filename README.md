@@ -138,7 +138,7 @@ Project Link: [https://github.com/dhmnr/cuCALC](https://github.com/dhmnr/cuCALC)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-<!-- * [Choose an Open Source License](https://choosealicense.com) -->
+* [Choose an Open Source License](https://choosealicense.com)
 * [Img Shields](https://shields.io)
 
 <p align="right">(<a href="#top">back to top</a>)</p>

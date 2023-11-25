@@ -1,4 +1,4 @@
-set(SOURCE_FILES cucalc.cu)
+set(SOURCE_FILES misc/gpuinfo.cu)
 
 # Create a CUDA library
 add_library(cucalc SHARED ${SOURCE_FILES})
