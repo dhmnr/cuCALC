@@ -3,6 +3,8 @@
 #include <device_launch_parameters.h>
 
 #include <iostream>
+#include <stdio.h>
+
 
 inline int _ConvertSMVer2Cores(int major, int minor) {
   // Defines for GPU Architecture types (using the SM version to determine
