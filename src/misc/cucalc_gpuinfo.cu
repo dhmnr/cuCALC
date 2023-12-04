@@ -39,7 +39,7 @@ inline int _ConvertSMVer2Cores(int major, int minor) {
   return nGpuArchCoresPerSM[index - 1].Cores;
 }
 
-int gpuinfo() {
+int cucalc_gpuinfo() {
   // Check for the presence of CUDA-enabled devices
   int deviceCount;
   cudaGetDeviceCount(&deviceCount);
