@@ -1,6 +1,5 @@
 #pragma once
 
-typedef double (*cucalc_func) (double);
+typedef double (*cucalc_func)(double);
 
 int cucalc_gpuinfo();
-

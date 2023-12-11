@@ -1,3 +1,3 @@
 #pragma once
 
-double cucalc_integration_trapez(cucalc_func p_add_func, double a, double b, size_t steps);
+double cucalc_integration_trapez(double a, double b, size_t steps);
