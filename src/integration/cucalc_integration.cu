@@ -2,7 +2,7 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <stdio.h>
-#include "cucalc/cucalc_common.h"
+
 #include <iostream>
 
 #include "cucalc/cucalc.h"
@@ -29,7 +29,7 @@ double cucalc_integration_trapez(void *func, double a, double b, size_t steps) {
   size_t thread_count = steps + 2;
   dim3 blockSize(BLOCK_SIZE, 1, 1);
   dim3 gridSize((thread_count - 1) / BLOCK_SIZE + 1, 1, 1);
-  double integral = 0, h = (b - a) / steps;
+  double h = (b - a) / steps;
 
   double *d_fx, *h_fx;
   cuda_ret = cudaMalloc((void **)&d_fx, sizeof(double) * thread_count);  // TODO error handling
@@ -38,12 +38,9 @@ double cucalc_integration_trapez(void *func, double a, double b, size_t steps) {
   cuda_ret = cudaMallocHost((void **)&h_fx, sizeof(double) * thread_count);
   cudaErrorCheck(cuda_ret, "Unable to allocate memory on host", 1);
 
-  cucalc_integration_trapez_kernel<<<gridSize, blockSize>>>(h_fx, h, d_fx, a, thread_count);
-  cudaError_t cuda_ret = cudaDeviceSynchronize();
-  if (cuda_ret != cudaSuccess) {
-    printf("Unable to launch/execute kernel\n");
-    printf(cudaGetErrorString(cuda_ret));
-    printf("\n");
-  }
+  cucalc_integration_trapez_kernel<<<gridSize, blockSize>>>(func, h, d_fx, a, thread_count);
+  cuda_ret = cudaDeviceSynchronize();
+  cudaErrorCheck(cuda_ret, "Unable to launch kernel", 1);
+
   return h * cucalc_reduction_sum(d_fx, thread_count);
 }
