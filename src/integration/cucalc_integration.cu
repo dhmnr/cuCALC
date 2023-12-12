@@ -38,7 +38,7 @@ double cucalc_integration_trapez(void *func, double a, double b, size_t steps) {
   cuda_ret = cudaMallocHost((void **)&h_fx, sizeof(double) * thread_count);
   cudaErrorCheck(cuda_ret, "Unable to allocate memory on host", 1);
 
-  cucalc_integration_trapez_kernel<<<gridSize, blockSize>>>(h_func2, h, d_fx, a, thread_count);
+  cucalc_integration_trapez_kernel<<<gridSize, blockSize>>>(h_fx, h, d_fx, a, thread_count);
   cudaError_t cuda_ret = cudaDeviceSynchronize();
   if (cuda_ret != cudaSuccess) {
     printf("Unable to launch/execute kernel\n");
