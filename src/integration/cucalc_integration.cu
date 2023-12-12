@@ -3,28 +3,16 @@
 #include <device_launch_parameters.h>
 #include <stdio.h>
 
-#include <iostream>
-
 #include "cucalc/cucalc.h"
+#include "cucalc/cucalc_common.h"
+#include "cucalc/cucalc_integration.h"
 
-#define gpuErrchk(val) cudaErrorCheck(val, __FILE__, __LINE__, true)
-void cudaErrorCheck(cudaError_t err, char *file, int line, bool abort) {
-  if (err != cudaSuccess) {
-    printf("%s %s %d\n", cudaGetErrorString(err), file, line);
-    if (abort) exit(-1);
-  }
-}
-
-__device__ double cubed(double x) { return x * x * x; }
-
-__device__ cucalc_func d_func = cubed;
-
-__global__ void cucalc_integration_trapez_kernel(cucalc_func func, double h, double *d_fx, double a,
+__global__ void cucalc_integration_trapez_kernel(void *func, double h, double *d_fx, double a,
                                                  size_t n) {
   size_t tid = threadIdx.x + blockIdx.x * blockDim.x;
 
   double mult, x = tid * h + a;
-  double res = (func)(x);
+  double res = (cucalc_func(func))(x);
 
   if (tid == 0 || tid == (n - 1))
     mult = 1 / 2;
@@ -33,7 +21,8 @@ __global__ void cucalc_integration_trapez_kernel(cucalc_func func, double h, dou
   d_fx[tid] = mult * res;
 }
 
-double cucalc_integration_trapez(double a, double b, size_t steps) {
+double cucalc_integration_trapez(void *func, double a, double b, size_t steps) {
+  cudaError_t cuda_ret;
   int BLOCK_SIZE = 512;
   size_t thread_count = steps + 2;
   dim3 blockSize(BLOCK_SIZE, 1, 1);
@@ -41,23 +30,18 @@ double cucalc_integration_trapez(double a, double b, size_t steps) {
   double integral = 0, h = (b - a) / steps;
 
   double *d_fx, *h_fx;
-  cudaMalloc((void **)&d_fx, sizeof(double) * thread_count);  // TODO error handling
-  cudaMallocHost((void **)&h_fx, sizeof(double) * thread_count);
-  cucalc_func h_func;
+  cuda_ret = cudaMalloc((void **)&d_fx, sizeof(double) * thread_count);  // TODO error handling
+  cudaErrorCheck(cuda_ret, "Unable to allocate memory on GPU", 1);
 
-  gpuErrchk(cudaMemcpyFromSymbol(&h_func, d_func, sizeof(cucalc_func), 0, cudaMemcpyDeviceToHost));
-  printf("h_func Addr : %x\n", &h_func);
-  cucalc_func h_func2 = h_func;
-  printf("f_func2 Addr : %x\n", &h_func2);
+  cuda_ret = cudaMallocHost((void **)&h_fx, sizeof(double) * thread_count);
+  cudaErrorCheck(cuda_ret, "Unable to allocate memory on host", 1);
 
-  cucalc_integration_trapez_kernel<<<blockSize, gridSize>>>(h_func2, h, d_fx, a, thread_count);
-  cudaError_t cuda_ret = cudaDeviceSynchronize();
-  if (cuda_ret != cudaSuccess) {
-    printf("Unable to launch/execute kernel\n");
-    printf(cudaGetErrorString(cuda_ret));
-    printf("\n");
-  }
+  cucalc_integration_trapez_kernel<<<blockSize, gridSize>>>(func, h, d_fx, a, thread_count);
+  cuda_ret = cudaDeviceSynchronize();
+  cudaErrorCheck(cuda_ret, "Unable to launch cucalc_integration_trapez_kernel", 1);
+
   cudaMemcpy(h_fx, d_fx, sizeof(double) * thread_count, cudaMemcpyDeviceToHost);
+
   for (size_t i = 0; i < thread_count; i++) {
     integral += h_fx[i];
   }
