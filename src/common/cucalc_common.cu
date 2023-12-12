@@ -1,20 +1,20 @@
-#include <stdio.h>
-
-// #define gpuErrchk(val) cudaErrorCheck(val, __FILE__, __LINE__, true)
-void cudaErrorCheck(cudaError_t err, const char* message, bool abort) {
-  if (err != cudaSuccess) {
-    printf("%s:%s\n%s\n", cudaGetErrorName(err), cudaGetErrorString(err), message);
-    if (abort) exit(-1);
-  }
-}
 #define BLOCK_SIZE 512
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <stdio.h>
+
 #include <iostream>
 
 #include "cucalc/cucalc.h"
+
+// #define gpuErrchk(val) cudaErrorCheck(val, __FILE__, __LINE__, true)
+void cudaErrorCheck(cudaError_t err, const char *message, bool abort) {
+  if (err != cudaSuccess) {
+    printf("%s:%s\n%s\n", cudaGetErrorName(err), cudaGetErrorString(err), message);
+    if (abort) exit(-1);
+  }
+}
 
 __global__ void reduction_sum(double *array, size_t array_length) {
   __shared__ double partialSum[2 * BLOCK_SIZE];
@@ -48,30 +48,26 @@ __global__ void reduction_sum(double *array, size_t array_length) {
   }
 }
 /*
-The following Reduction Sum function is used to calculate the sum provided the array and size of array.
-The reduction kernel is launched repeatedly until it reduces to single block where the final sum is calculated. 
+The following Reduction Sum function is used to calculate the sum provided the array and size of
+array. The reduction kernel is launched repeatedly until it reduces to single block where the final
+sum is calculated.
 */
-double cucalc_reduction_sum(double *array, size_t array_length)
-{
-// Reduction Sum:-
+double cucalc_reduction_sum(double *array, size_t array_length) {
+  cudaError_t cuda_ret;
   size_t block_count;
   double reduction_sum_output;
 
-  for(size_t element_count = array_length; element_count>2; element_count = block_count)
-  {
+  for (size_t element_count = array_length; element_count > 2; element_count = block_count) {
     block_count = (element_count - 1) / (BLOCK_SIZE * 2) + 1;
     dim3 blockSize(BLOCK_SIZE, 1, 1);
     dim3 gridSize(block_count, 1, 1);
+
     reduction_sum<<<gridSize, blockSize>>>(array, element_count);
-    cudaError_t cuda_ret = cudaDeviceSynchronize();
-    if (cuda_ret != cudaSuccess) {
-      printf("Unable to launch/execute kernel\n");
-      printf(cudaGetErrorString(cuda_ret));
-      printf("\n");
+    cuda_ret = cudaDeviceSynchronize();
+    cudaErrorCheck(cuda_ret, "Unable to launch/execute reduction kernel\n", 1);
   }
-  
-  }
-  cudaMemcpy(&reduction_sum_output, array, sizeof(double), cudaMemcpyDeviceToHost);
+  cuda_ret = cudaMemcpy(&reduction_sum_output, array, sizeof(double), cudaMemcpyDeviceToHost);
+  cudaErrorCheck(cuda_ret, "Unable to copy reduction sum to host\n", 1);
 
   return reduction_sum_output;
 }

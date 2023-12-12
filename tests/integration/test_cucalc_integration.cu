@@ -11,6 +11,7 @@ __device__ double cubed(double x) { return x * x * x; }
 __device__ cucalc_func d_func = cubed;
 
 int main(int argc, char const* argv[]) {
+  cudaSetDevice(3);
   void* h_func;
   cudaError_t cuda_ret
       = cudaMemcpyFromSymbol(&h_func, d_func, sizeof(cucalc_func), 0, cudaMemcpyDeviceToHost);
@@ -21,7 +22,9 @@ int main(int argc, char const* argv[]) {
   }
 
   double result = cucalc_integration_trapez(h_func, 0, 8, 1 << 18);
-  printf("Integral  = %f\n", result);
-
+  if (1024 == (int)result)
+    printf("Test passed!\n");
+  else
+    printf("Test failed! expected : %d, actual : %d\n", 1024, (int)result);
   return 0;
 }
