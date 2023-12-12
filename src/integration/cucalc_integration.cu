@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "cucalc/cucalc.h"
-
+#define BLOCK_SIZE 512
 #define gpuErrchk(val) cudaErrorCheck(val, __FILE__, __LINE__, true)
 void cudaErrorCheck(cudaError_t err, char *file, int line, bool abort) {
   if (err != cudaSuccess) {
@@ -33,8 +33,46 @@ __global__ void cucalc_integration_trapez_kernel(cucalc_func func, double h, dou
   d_fx[tid] = mult * res;
 }
 
+__global__ void reduction_sum(double *out, double *d_fx, int size){
+  __shared__ double partialSum[2*BLOCK_SIZE];
+    unsigned int t = threadIdx.x;
+    unsigned int start = 2*blockIdx.x*blockDim.x;
+    partialSum[t] = d_fx[start + t];
+    partialSum[blockDim.x+t] = d_fx[start + blockDim.x+t];
+    unsigned int offset;
+       if (blockIdx.x == size / (BLOCK_SIZE<<1)) {
+        offset = (size % (BLOCK_SIZE<<1));
+        if (blockDim.x+t < offset) {
+            partialSum[t] = d_fx[start + t];
+            partialSum[blockDim.x+t] = d_fx[start + blockDim.x+t];
+        }
+        else if (t < offset) {
+            partialSum[t] = d_fx[start + t];
+            partialSum[blockDim.x+t] = 0;
+        }
+        else {
+            partialSum[t] = 0;
+            partialSum[blockDim.x+t] = 0;
+        }
+    }
+    else {
+        partialSum[t] = d_fx[start + t];
+        partialSum[blockDim.x+t] = d_fx[start + blockDim.x+t];
+    }
+    for (unsigned int stride = BLOCK_SIZE;stride >=1; stride =stride/2)
+    {
+        __syncthreads();
+        if (t <stride)
+        partialSum[t]+= partialSum[t+stride];
+    }
+    if (threadIdx.x == 0){
+
+        out[blockIdx.x] = partialSum[0];
+    }
+
+}
 double cucalc_integration_trapez(double a, double b, size_t steps) {
-  int BLOCK_SIZE = 512;
+  //int BLOCK_SIZE = 512;
   size_t thread_count = steps + 2;
   dim3 blockSize(BLOCK_SIZE, 1, 1);
   dim3 gridSize((thread_count - 1) / BLOCK_SIZE + 1, 1, 1);
@@ -57,8 +95,26 @@ double cucalc_integration_trapez(double a, double b, size_t steps) {
     printf(cudaGetErrorString(cuda_ret));
     printf("\n");
   }
-  cudaMemcpy(h_fx, d_fx, sizeof(double) * thread_count, cudaMemcpyDeviceToHost);
-  for (size_t i = 0; i < thread_count; i++) {
+
+  //Reduction Sum
+  unsigned int out_elements;
+  double *out_h, *out_d;
+  // out_elements = in_elements / (BLOCK_SIZE<<1);
+  // if(in_elements % (BLOCK_SIZE<<1)) out_elements++;
+
+  out_elements = (thread_count - 1) / BLOCK_SIZE*2 + 1;
+  out_h = (double*)malloc(out_elements * sizeof(double));
+
+  cudaMalloc((void**)&out_d, out_elements * sizeof(double));
+  //if(cuda_ret != cudaSuccess) FATAL("Unable to allocate device memory");
+
+  //if(out_h == NULL) FATAL("Unable to allocate host");
+  dim3 gridSizeReduction((thread_count - 1) / BLOCK_SIZE*2 + 1, 1, 1);
+  reduction_sum<<<blockSize, gridSizeReduction>>>(out_d, d_fx, thread_count);
+  cudaMemcpy(out_h, out_d, out_elements * sizeof(double),cudaMemcpyDeviceToHost);
+
+  cudaMemcpy(h_fx, out_d, sizeof(double) * out_elements, cudaMemcpyDeviceToHost);
+  for (size_t i = 0; i < out_elements; i++) {
     integral += h_fx[i];
   }
   return h * integral;
