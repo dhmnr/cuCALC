@@ -30,6 +30,7 @@ __global__ void cucalc_derivative_forward(double h, double *d_fx,double *d_fx_ou
     d_fx_out[tid] = (d_fx[tid + 1] - d_fx[tid])/h;
 
 }
+}
 __global__ void cucalc_derivative_central(double h, double *d_fx,double *d_fx_out) {
   
   size_t tid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -69,7 +70,7 @@ double* cucalc_derivative_backward(void *func, double a, double b, size_t steps)
   return h_fx;
 }
 
-double cucalc_derivative_forward(void *func, double a, double b, size_t steps) {
+double* cucalc_derivative_forward(void *func, double a, double b, size_t steps) {
   cudaError_t cuda_ret;
   int BLOCK_SIZE = 512;
   size_t thread_count = steps + 2;
@@ -99,7 +100,7 @@ double cucalc_derivative_forward(void *func, double a, double b, size_t steps) {
   return h_fx;
 }
 
-double cucalc_derivative_central(void *func, double a, double b, size_t steps) {
+double* cucalc_derivative_central(void *func, double a, double b, size_t steps) {
   cudaError_t cuda_ret;
   int BLOCK_SIZE = 512;
   size_t thread_count = steps + 2;
