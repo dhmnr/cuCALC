@@ -21,17 +21,26 @@ int main(int argc, char const* argv[]) {
     printf("\n");
   }
 
-  double *result_backward = cucalc_derivative_backward(h_func, 0, 2, 1000);
-  printf("Backward %f\n",result_backward[500]);
+  double *result = cucalc_derivative_backward(h_func, 0, 2, 1000);
+  double actual_value = 1.997999999999999776179038235568441450595855712890625000000000000;
+  if (actual_value == result[500])
+    printf("Backward Difference Test passed!\n");
+  else
+    printf("Backward Difference Test failed! expected : %.64f, actual : %.64f\n", 1.997999999999999776179038235568441450595855712890625000000000000, result[500]);
   
-  double *result_forward = cucalc_derivative_forward(h_func, 0, 2, 1000);
-  printf("Forward %f\n",result_forward[500]);
+  actual_value = 2.0019999999999482653834093071054667234420776367187500000000000000;
+  result = cucalc_derivative_forward(h_func, 0, 2, 1000);
+  if (actual_value == result[500])
+    printf("Forward Difference Test passed!\n");
+  else
+    printf("Forward Difference Test failed! expected : %.64f, actual : %.64f\n", 2.002000, result[500]);
   
-  double *result_central = cucalc_derivative_central(h_func, 0, 2, 1000);
-  printf("Central %f\n",result_central[500]);
-  // if (1024 == (int)result)
-  //   printf("Test passed!\n");
-  // else
-  //   printf("Test failed! expected : %d, actual : %d\n", 1024, (int)result);
-  // return 0;
+  actual_value = 1.997999999999999776179038235568441450595855712890625000000000000;
+  result = cucalc_derivative_central(h_func, 0, 2, 1000);
+
+  if (actual_value == result[500])
+    printf("Central Difference Test passed!\n");
+  else
+    printf("Central Difference Test failed! expected : %.64f, actual : %.64f\n", 1.998000, result[500]);
+  return 0;
 }
