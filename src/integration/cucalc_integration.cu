@@ -44,3 +44,5 @@ double cucalc_integration_trapez(void *func, double a, double b, size_t steps) {
 
   return h * cucalc_reduction_sum(d_fx, thread_count);
 }
+
+// double cucalc_integration_qag()
