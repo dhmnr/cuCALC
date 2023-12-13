@@ -21,7 +21,7 @@ int main(int argc, char const* argv[]) {
     printf("\n");
   }
 
-  double result = cucalc_integration_trapez(h_func, 0, 8, 1 << 18);
+  double *result = cucalc_derivative_backward(h_func, 0, 8, 1 << 18);
   if (1024 == (int)result)
     printf("Test passed!\n");
   else

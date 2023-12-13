@@ -2,6 +2,7 @@ set(SOURCE_FILES
     common/cucalc_common.cu
     misc/cucalc_gpuinfo.cu
     integration/cucalc_integration.cu
+    derivative/cucalc_derivative.cu
     common/cucalc_common.cu)
 
 # Create a CUDA library
