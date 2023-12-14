@@ -1,10 +1,9 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
-
-#include <iostream>
 #include <stdio.h>
 
+#include <iostream>
 
 inline int _ConvertSMVer2Cores(int major, int minor) {
   // Defines for GPU Architecture types (using the SM version to determine
@@ -66,11 +65,16 @@ int cucalc_gpuinfo() {
               << deviceProp.multiProcessorCount
                      * _ConvertSMVer2Cores(deviceProp.major, deviceProp.minor)
               << std::endl;
+    std::cout << "  Warp Size: " << deviceProp.warpSize << std::endl;
     std::cout << "  Shared Memory per Block: " << deviceProp.sharedMemPerBlock / 1024 << " KB"
               << std::endl;
     std::cout << "  Max Threads per Block: " << deviceProp.maxThreadsPerBlock << std::endl;
+    std::cout << "  Max Blocks per Multiprocessor: " << deviceProp.maxBlocksPerMultiProcessor
+              << std::endl;
     std::cout << "  Max Threads per Multiprocessor: " << deviceProp.maxThreadsPerMultiProcessor
               << std::endl;
+    std::cout << "  Max Grid Size: (" << deviceProp.maxGridSize[0] << ", "
+              << deviceProp.maxGridSize[1] << ", " << deviceProp.maxGridSize[2] << ")" << std::endl;
     std::cout << std::endl;
   }
 

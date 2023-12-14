@@ -1,6 +1,7 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,7 +27,7 @@ int main(int argc, char const* argv[]) {
   double expected = pow(b, 4) / 4 - pow(a, 4) / 4;
   double result = cucalc_integration_trapez(h_func, a, b, 1 << 18);
 
-  if (expected == result)
+  if (expected == (int)result)
     printf("\x1B[32mcucalc_integration_trapez: test passed!\033[0m\n");
   else
     printf(
