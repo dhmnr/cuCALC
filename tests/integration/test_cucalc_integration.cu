@@ -4,13 +4,30 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "cucalc/cucalc.h"
 #include "cucalc/cucalc_integration.h"
 
+typedef struct {
+  struct timeval startTime;
+  struct timeval endTime;
+} Timer;
+
+void startTime(Timer* timer) { gettimeofday(&(timer->startTime), NULL); }
+
+void stopTime(Timer* timer) { gettimeofday(&(timer->endTime), NULL); }
+
+float elapsedTime(Timer timer) {
+  return ((float)((timer.endTime.tv_sec - timer.startTime.tv_sec)
+                  + (timer.endTime.tv_usec - timer.startTime.tv_usec) / 1.0e6));
+}
+
 __device__ double cubed(double x) { return x * x * x; }
 
 __device__ cucalc_func d_func = cubed;
+
+double hostCubed(double x) { return x * x * x; }
 
 int main(int argc, char const* argv[]) {
   cudaSetDevice(3);
@@ -22,11 +39,26 @@ int main(int argc, char const* argv[]) {
     printf(cudaGetErrorString(cuda_ret));
     printf("\n");
   }
-
-  double a = 0, b = 8;
+  Timer timer;
+  double n = 1 << 28;
+  double res = 0, a = 0, b = 8;
   double expected = pow(b, 4) / 4 - pow(a, 4) / 4;
-  double result = cucalc_integration_trapez(h_func, a, b, 1 << 18);
+  startTime(&timer);
+  double result = cucalc_integration_trapez(h_func, a, b, n);
+  printf("GPU output : %f\n", result);
+  stopTime(&timer);
+  printf("GPU time : %f s\n", elapsedTime(timer));
 
+  startTime(&timer);
+
+  double h = (b - a) / n;
+  for (size_t i = 0; i < n; i++) {
+    double x = (double)i * h + a;
+    res += 0.5 * h * (hostCubed(x) + hostCubed(x + h));
+  }
+  printf("CPU output : %f\n", res);
+  stopTime(&timer);
+  printf("CPU time : %f s\n", elapsedTime(timer));
   if (expected == (int)result)
     printf("\x1B[32mcucalc_integration_trapez: test passed!\033[0m\n");
   else

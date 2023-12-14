@@ -46,7 +46,7 @@ __global__ void cucalc_integration_generic_kernel(void *func, double h, double *
 double cucalc_integration_generic(void *func, double a, double b, size_t steps, int method) {
   cudaError_t cuda_ret;
   int BLOCK_SIZE = 512;
-  size_t thread_count = steps + 1;
+  size_t thread_count = steps;
   dim3 blockSize(BLOCK_SIZE, 1, 1);
   dim3 gridSize((thread_count - 1) / BLOCK_SIZE + 1, 1, 1);
   double h = (b - a) / steps;
