@@ -32,7 +32,7 @@
 <p></p>
 
   <p align="center">
-    N-Body Simulator with CUDA compute and OpenGL visualization support
+    cuCALC is a high-performance numerical calculus library implemented in CUDA
     <br />
     <!-- <a href="https://github.com/dhmnr/cuCALC"><strong>Explore the docs »</strong></a> -->
     <br />
@@ -66,17 +66,20 @@
 
 
 
-<!-- ABOUT THE PROJECT -->
+<!-- ABOUT THE PROJECT 
 ## About The Project
 
 Lorem ipsum.<p align="right">(<a href="#top">back to top</a>)</p>
-
+-->
 
 
 ### Features
 
-* Lorem Ipsum
-* 
+ - Utilizes CUDA to parallelize calculus operations, offering significant speed improvements over CPU-based libraries.
+ - Includes functions for differentiation, integration, In future releases will cover optimization, and differential equations.
+ - Designed with modularity in mind, allowing for easy integration of new algorithms and functions.
+ - Works on various operating systems supporting CUDA
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
@@ -85,6 +88,9 @@ Lorem ipsum.<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap
+
+ - [ ] Optimizations and differential equations
+ - [ ] Supports various precision floating-point operations.
 
 
 
